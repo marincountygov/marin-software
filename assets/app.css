@@ -19,15 +19,6 @@
   list-style: none;
 }
 
-@media (max-width: 850px) {
-  .search-sidebar {
-    padding: 1rem;
-    border: 1px solid var(--app-border);
-    border-radius: var(--pico-border-radius);
-    background: var(--app-surface);
-  }
-}
-
 .software-card__name {
   margin: 0 0 0.15rem;
   font-size: 1.05rem;

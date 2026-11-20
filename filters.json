@@ -1,0 +1,18 @@
+{
+  "$schema": "vendor/marinos/filter-panel.schema.json",
+  "schemaVersion": "1.0.0",
+  "search": {
+    "id": "software-search-input"
+  },
+  "groups": [
+    {
+      "type": "checkbox",
+      "id": "department",
+      "label": "Departments",
+      "allLabel": "All departments",
+      "options": {
+        "app": true
+      }
+    }
+  ]
+}
