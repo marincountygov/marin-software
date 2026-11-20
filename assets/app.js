@@ -57,10 +57,14 @@
     </div></div>`;
   }
 
+  // The rows on the page, in the order they are listed, so a list item and its row share an index.
+  let shown = [];
+
   function renderResults(rows) {
     const sorted = [...rows].sort((a, b) =>
       (a.system_name || "").localeCompare(b.system_name || "")
     );
+    shown = sorted;
 
     const departmentCounts = new Map();
     sorted.forEach((row) => {
@@ -73,23 +77,8 @@
     resultsEl.innerHTML = sorted
       .map((row) => {
         const department = (row.custodian_department || "").trim();
-        const searchText = [
-          row.system_name,
-          row.system_vendor,
-          row.system_product,
-          row.system_purpose,
-          row.data_category,
-          department,
-          row.data_custodian,
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-
         return `
-          <li class="app-card" data-search-item
-              data-search-text="${escapeHtml(searchText)}"
-              data-facet-department="${escapeHtml(department)}">
+          <li class="app-card" data-search-item>
             <h3 class="software-card__name">${escapeHtml(row.system_name || "Unnamed system")}</h3>
             ${row.system_vendor ? `<p class="software-card__vendor">${escapeHtml(row.system_vendor)}</p>` : ""}
             ${row.system_purpose ? `<p class="software-card__purpose">${escapeHtml(row.system_purpose)}</p>` : ""}
@@ -117,21 +106,15 @@
     else column.addEventListener("marin-filter-ready", offer, { once: true });
   }
 
+  // The column does the matching: filters.json names the row field the department looks at and the fields the search reads.
   function applyFilter() {
-    if (!column?.setResults) return;
-    const state = column.filterState;
-    const query = state.search.trim().toLowerCase();
-    const selected = state.groups.department;
-    const items = Array.from(resultsEl.querySelectorAll("[data-search-item]"));
-    if (!items.length) return;
-    let visible = 0;
-    items.forEach((item) => {
-      const matchesQuery = !query || (item.dataset.searchText || "").includes(query);
-      const matchesDepartment = !selected.length || selected.includes(item.dataset.facetDepartment);
-      item.hidden = !(matchesQuery && matchesDepartment);
-      if (!item.hidden) visible += 1;
+    if (!column?.setResults || !shown.length) return;
+    const matching = new Set(column.filter(shown));
+    Array.from(resultsEl.querySelectorAll("[data-search-item]")).forEach((item, index) => {
+      item.hidden = !matching.has(shown[index]);
     });
-    column.setResults(visible, visible ? `${visible} of ${items.length} software systems` : undefined);
+    column.updateCounts(shown);
+    column.setResults(matching.size, matching.size ? `${matching.size} of ${shown.length} software systems` : undefined);
   }
   column.addEventListener("marin-filter-change", applyFilter);
 
