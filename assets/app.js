@@ -5,12 +5,9 @@
 
   const resultsEl = document.getElementById("software-results");
   const countEl = document.getElementById("software-results-count");
-  const emptyEl = document.getElementById("software-empty");
-  const searchInput = document.getElementById("software-search-input");
-  const departmentGroup = document.getElementById("department-facet-group");
-  const departmentList = document.getElementById("department-facet-list");
-  const departmentDetails = document.getElementById("department-details");
-  const departmentSummary = document.getElementById("department-summary");
+  // The filter column is drawn by the shell from filters.json. This app supplies the departments (counted from the
+  // rows) and does the matching; the column keeps the search, the choices, the address and the result message.
+  const column = document.querySelector("[data-filter-column]");
 
   function escapeHtml(value) {
     return String(value || "").replace(/[&<>"']/g, (char) =>
@@ -73,20 +70,6 @@
     });
     const departments = Array.from(departmentCounts.keys()).sort((a, b) => a.localeCompare(b));
 
-    departmentList.innerHTML = departments
-      .map(
-        (department) => `
-          <li>
-            <label>
-              <input type="checkbox" data-facet-filter="department" value="${escapeHtml(department)}">
-              ${escapeHtml(department)}
-              <span class="search-facet-count">(${departmentCounts.get(department)})</span>
-            </label>
-          </li>
-        `
-      )
-      .join("");
-
     resultsEl.innerHTML = sorted
       .map((row) => {
         const department = (row.custodian_department || "").trim();
@@ -125,28 +108,32 @@
       })
       .join("");
 
-    window.MarinSearchLayout.init({
-      input: searchInput,
-      items: () => Array.from(resultsEl.querySelectorAll("[data-search-item]")),
-      facetGroups: [{ name: "department", container: departmentGroup }],
-      countEl,
-      emptyEl,
-      resetButton: document.getElementById("reset-filters-button"),
-      toggleButton: document.getElementById("filter-toggle"),
-      formatCount: (visible, total) => `${visible} of ${total} software systems`,
-    });
-    // Added after init so Reset has already cleared the boxes when the summary is read.
-    departmentGroup.addEventListener("change", syncDepartmentSummary);
-    document.getElementById("reset-filters-button").addEventListener("click", syncDepartmentSummary);
-    syncDepartmentSummary();
+    // The column is drawn once its own file has loaded, which can be before or after the rows arrive.
+    const offer = () => {
+      column.setOptions("department", departments.map((department) => ({ value: department, label: department, count: departmentCounts.get(department) })));
+      applyFilter();
+    };
+    if (column.setOptions) offer();
+    else column.addEventListener("marin-filter-ready", offer, { once: true });
   }
 
-  // The summary says how many departments are chosen; the group opens on load when a choice came from the address.
-  function syncDepartmentSummary() {
-    const count = departmentGroup.querySelectorAll('input[data-facet-filter="department"]:checked').length;
-    departmentSummary.textContent = count ? `${count} selected` : "All departments";
-    if (count) departmentDetails.open = true;
+  function applyFilter() {
+    if (!column?.setResults) return;
+    const state = column.filterState;
+    const query = state.search.trim().toLowerCase();
+    const selected = state.groups.department;
+    const items = Array.from(resultsEl.querySelectorAll("[data-search-item]"));
+    if (!items.length) return;
+    let visible = 0;
+    items.forEach((item) => {
+      const matchesQuery = !query || (item.dataset.searchText || "").includes(query);
+      const matchesDepartment = !selected.length || selected.includes(item.dataset.facetDepartment);
+      item.hidden = !(matchesQuery && matchesDepartment);
+      if (!item.hidden) visible += 1;
+    });
+    column.setResults(visible, visible ? `${visible} of ${items.length} software systems` : undefined);
   }
+  column.addEventListener("marin-filter-change", applyFilter);
 
   function showError(message) {
     countEl.textContent = message;
