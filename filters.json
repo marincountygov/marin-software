@@ -2,7 +2,16 @@
   "$schema": "vendor/marinos/filter-panel.schema.json",
   "schemaVersion": "1.0.0",
   "search": {
-    "id": "software-search-input"
+    "id": "software-search-input",
+    "fields": [
+      "system_name",
+      "system_vendor",
+      "system_product",
+      "system_purpose",
+      "data_category",
+      "custodian_department",
+      "data_custodian"
+    ]
   },
   "groups": [
     {
@@ -12,7 +21,8 @@
       "allLabel": "All departments",
       "options": {
         "app": true
-      }
+      },
+      "field": "custodian_department"
     }
   ]
 }

@@ -6,7 +6,6 @@
   "type": "object",
   "required": [
     "schemaVersion",
-    "search",
     "groups"
   ],
   "additionalProperties": false,
@@ -18,7 +17,7 @@
       "const": "1.0.0"
     },
     "search": {
-      "description": "The search box, always first. Its label is always \"Search\" and it never has a placeholder, so neither can be set.",
+      "description": "The search box, first when there is one. Leave it out for a short list that needs none. Its label is always \"Search\" and it never has a placeholder, so neither can be set.",
       "type": "object",
       "required": [
         "id"
@@ -27,6 +26,22 @@
       "properties": {
         "id": {
           "$ref": "#/$defs/id"
+        },
+        "fields": {
+          "description": "The record fields the search reads, as dot paths. With these the column can match records itself.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "match": {
+          "description": "\"phrase\" (default): the whole search must appear in the text. \"words\": every word must appear, in any order.",
+          "enum": [
+            "phrase",
+            "words"
+          ]
         }
       }
     },
@@ -53,6 +68,10 @@
           }
         ]
       }
+    },
+    "address": {
+      "description": "false keeps every choice out of the address bar (a table's own filter). Default true.",
+      "type": "boolean"
     }
   },
   "$defs": {
@@ -109,6 +128,13 @@
               "description": "The record field that holds the value of another record in the same list: that record is listed under it (a division under its department). Choosing one does not choose the other.",
               "type": "string",
               "minLength": 1
+            },
+            "order": {
+              "description": "\"data\" keeps the choices in the order the file lists them; the default sorts them A to Z (numbers in order).",
+              "enum": [
+                "label",
+                "data"
+              ]
             }
           }
         },
@@ -200,6 +226,17 @@
         },
         "param": {
           "$ref": "#/$defs/id"
+        },
+        "separator": {
+          "description": "Read and write the choices as one address parameter joined with this character (\"a,b\"), as an app's older shared links did. Without it each choice is its own parameter.",
+          "enum": [
+            ","
+          ]
+        },
+        "field": {
+          "description": "The record field this group matches against, as a dot path (\"themes\", \"venue.name\"). A field holding a list counts as each of its values. Leave it out when the app applies the group itself (a time range, a tab).",
+          "type": "string",
+          "minLength": 1
         }
       },
       "if": {
@@ -250,6 +287,11 @@
         },
         "param": {
           "$ref": "#/$defs/id"
+        },
+        "field": {
+          "description": "The record field this group matches against, as a dot path (\"themes\", \"venue.name\"). A field holding a list counts as each of its values. Leave it out when the app applies the group itself (a time range, a tab).",
+          "type": "string",
+          "minLength": 1
         }
       }
     },
@@ -284,6 +326,11 @@
         },
         "default": {
           "description": "The value chosen on load and after Reset, or \"latest\".",
+          "type": "string",
+          "minLength": 1
+        },
+        "field": {
+          "description": "The record field this group matches against, as a dot path (\"themes\", \"venue.name\"). A field holding a list counts as each of its values. Leave it out when the app applies the group itself (a time range, a tab).",
           "type": "string",
           "minLength": 1
         }
@@ -322,6 +369,19 @@
         },
         "param": {
           "$ref": "#/$defs/id"
+        },
+        "fromParam": {
+          "description": "The address parameter for the From date, when links already used one (\"from\"). Default: the group's param and \"-from\".",
+          "$ref": "#/$defs/id"
+        },
+        "toParam": {
+          "description": "The address parameter for the To date (\"to\"). Default: the group's param and \"-to\".",
+          "$ref": "#/$defs/id"
+        },
+        "field": {
+          "description": "The record field this group matches against, as a dot path (\"themes\", \"venue.name\"). A field holding a list counts as each of its values. Leave it out when the app applies the group itself (a time range, a tab).",
+          "type": "string",
+          "minLength": 1
         }
       }
     },
@@ -363,38 +423,76 @@
           }
         },
         "options": {
-          "type": "object",
-          "required": [
-            "from",
-            "valueField"
-          ],
-          "additionalProperties": false,
-          "properties": {
-            "from": {
-              "type": "string",
-              "minLength": 1
+          "oneOf": [
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "valueField"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "from": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "records": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "valueField": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "labelField": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "parentField": {
+                  "description": "The record field that holds the value of another record in the same list: that record is listed under it (a division under its department). Choosing one does not choose the other.",
+                  "type": "string",
+                  "minLength": 1
+                },
+                "order": {
+                  "description": "\"data\" keeps the choices in the order the file lists them; the default sorts them A to Z (numbers in order).",
+                  "enum": [
+                    "label",
+                    "data"
+                  ]
+                }
+              }
             },
-            "records": {
-              "type": "string",
-              "minLength": 1
-            },
-            "valueField": {
-              "type": "string",
-              "minLength": 1
-            },
-            "labelField": {
-              "type": "string",
-              "minLength": 1
-            },
-            "parentField": {
-              "description": "The record field that holds the value of another record in the same list: that record is listed under it (a division under its department). Choosing one does not choose the other.",
-              "type": "string",
-              "minLength": 1
+            {
+              "$ref": "#/$defs/appOptions"
             }
-          }
+          ]
         },
         "param": {
           "$ref": "#/$defs/id"
+        },
+        "separator": {
+          "description": "Read and write the choices as one address parameter joined with this character (\"a,b\"), as an app's older shared links did. Without it each choice is its own parameter.",
+          "enum": [
+            ","
+          ]
+        },
+        "field": {
+          "description": "The record field this group matches against, as a dot path (\"themes\", \"venue.name\"). A field holding a list counts as each of its values. Leave it out when the app applies the group itself (a time range, a tab).",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "appOptions": {
+      "description": "The app supplies the choices itself after it loads (data it fetched or worked out): column.setOptions(groupId, [{value, label, count?}]). The group's name and \"All\" text still come from this file.",
+      "type": "object",
+      "required": [
+        "app"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "app": {
+          "const": true
         }
       }
     }
