@@ -1,0 +1,30 @@
+schema: 1
+
+project:
+  name: Marin Software
+  repo: marin-software
+  type: app
+  owner: County of Marin
+  audience: staff
+  status: alpha
+
+platform:
+  shell: 1.25.1
+
+deployment:
+  target: github-pages
+  url: https://marincountygov.github.io/marin-software/
+
+# Declare whether the deployed app uses AI (not tools used to build it), then
+# uncomment. Until declared, the Tech page says "Not documented".
+ai:
+  used: false
+
+# List any outside services the deployed app uses (not the shared App Shell
+# calls), or write "services: none". Until declared, the Tech page says "Not documented".
+services:
+  data-marincounty:
+    name: County of Marin open data portal
+    purpose: The public dataset this app searches
+    runs: browser
+    visitor-data: false

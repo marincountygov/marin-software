@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <!-- BEGIN generated security meta: python3 scripts/sync-security-meta.py --write -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://marincountygov.github.io/marin-os/catalog.json https://marincountygov.github.io/marin-os/data/lighthouse.json https://marincountygov.github.io/marin-os/data/tech.json https://api.github.com https://data.marincounty.gov; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <!-- END generated security meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Marin Software | County of Marin</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='10' fill='%23000'/%3E%3Cg fill='none' stroke='%23e5b53b' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round' transform='translate(9,9) scale(1.25)'%3E%3Crect width='7' height='7' x='3' y='3' rx='1'/%3E%3Crect width='7' height='7' x='14' y='3' rx='1'/%3E%3Crect width='7' height='7' x='14' y='14' rx='1'/%3E%3Crect width='7' height='7' x='3' y='14' rx='1'/%3E%3C/g%3E%3C/svg%3E">
+    <meta name="description" content="Search the County of Marin's SB272 catalog of enterprise software systems.">
+    <link rel="stylesheet" href="vendor/marinos/marinos.css">
+    <link rel="stylesheet" href="assets/app.css">
+    <script src="vendor/marinos/marinos.js" defer></script>
+    <script src="assets/search-layout.js" defer></script>
+    <script src="assets/app.js" defer></script>
+  </head>
+  <body>
+    <noscript>
+      <div class="container app-alert app-alert--warning">
+        JavaScript is required to display the MarinOS interface and use this application.
+      </div>
+    </noscript>
+
+    <marin-os-banner></marin-os-banner>
+
+    <marin-app-header app-name="Marin Software" app-description="Search the County of Marin's SB272 catalog of enterprise software systems.">
+      <template data-icon>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+      </template>
+    </marin-app-header>
+
+    <main id="main" class="container app-main">
+      <!-- Keep the primary workflow first; the shell uses it as the default view. -->
+      <section id="start" data-tab-section="start" aria-label="Marin Software"><div class="search-layout"><div class="search-side"><button type="button" id="filter-toggle" class="filter-toggle" data-filter-toggle="software" aria-controls="filter-panel"></button><aside id="filter-panel" class="search-sidebar" aria-labelledby="filter-panel-title" data-open="false"><div class="search-panel-header"><h2 class="search-panel-title" id="filter-panel-title">Filter</h2><button type="button" class="action-button" id="reset-filters-button" aria-label="Reset filters" title="Reset filters"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button></div><div class="search-input-field"><label for="software-search-input">Search</label><input type="search" id="software-search-input" data-search-input placeholder="Search systems&hellip;" autocomplete="off"></div><fieldset class="search-facet-group" id="department-facet-group"><legend>Departments</legend><details class="mm-facet-group" id="department-details"><summary id="department-summary">All departments</summary><ul class="search-facet-list" id="department-facet-list"></ul></details></fieldset></aside></div><div class="search-results"><p class="search-results-count app-help-text" id="software-results-count" role="status" aria-live="polite" aria-atomic="true">Loading software catalog&hellip;</p><p class="app-empty" id="software-empty" hidden>No software systems match your search.</p><ul class="search-results-list" id="software-results" aria-label="Software systems"></ul></div></div></section>
+
+      <!-- Supply app-owned content only; the shell generates sections and headings. -->
+      <marin-app-info app-name="Marin Software" repo="marin-software" security-src="security.json">
+        <template data-about>
+          <p>Marin Software lets you search the County's SB272 catalog of enterprise software systems by name, vendor or purpose, and filter by custodian department.</p>
+        </template>
+        <template data-accessibility>
+          <p>Marin Software aims to meet WCAG 2.2 AA. Search, filters and results are standard form controls and lists, and result counts are announced as they change.</p>
+          <p>A formal accessibility review has not been completed yet. If you find a problem, use the Feedback button or contact the County's innovation team.</p>
+        </template>
+      </marin-app-info>
+    </main>
+
+    <marin-app-footer app-name="Marin Software"></marin-app-footer>
+    <marin-app-feedback></marin-app-feedback>
+  </body>
+</html>

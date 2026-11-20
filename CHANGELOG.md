@@ -1,0 +1,96 @@
+# Changelog
+
+Tracks changes to `marin-app-template` itself — repository structure, starter shell, scaffolding, and documentation. This is separate from `platform.shell` in `marin.yml`, which pins the vendored Marin App Shell runtime.
+
+Existing applications do not automatically inherit these changes. Template changes only affect projects created after the change; see `TEMPLATE_VERSION` and the README's "Project manifest and versions" section.
+
+## 2.0.12
+
+- Update the vendored Marin App Shell to 1.23.0 and pin `platform.shell: 1.23.0`. A solid button is now Marin Blue instead of Pico's stock blue, the arrow the shell draws on a solid button is sized for you, and the Feedback link is a named landmark. Why: a new app would otherwise start on the old blue and have to size the arrow itself.
+
+## 2.0.11
+
+- Update the vendored Marin App Shell to 1.18.0 and pin `platform.shell: 1.18.0`. Pressed and hovered quiet buttons now meet the 4.5:1 text contrast minimum in light mode.
+- `scripts/check.sh` now runs the button audit from `vendor/marinos/audit-buttons.py`, which ships with the shell, and the template's own copy (`scripts/audit-buttons.py`) is removed. Why: the copy had to be refreshed by hand whenever the shell's audit changed; the vendored one always matches the installed shell and updates when the shell is installed.
+
+## 2.0.10
+
+- Update the vendored Marin App Shell to 1.17.1 and pin `platform.shell: 1.17.1`. The shell now has one look for every kind of button and bundles Lucide icons that a button can draw with `data-icon="name"`. Why: a new app would otherwise start on a shell that lacks the current button styles.
+- Add a button audit and run it from `scripts/check.sh` (`--fail`). It lists any button that does not follow the Marin button standard (Pico's `secondary`, `outline` and `contrast` classes, `link-button`, bare buttons). A new app that adds an old-style button now fails its check. The script is a copy of the one in `marin-app-shell`; refresh it when the shell's changes.
+- Standard: `marin-digital-standards/product-design/interaction-design.md` ("Buttons"); how to build each kind: `marin-app-shell/docs/components.md`.
+
+## 2.0.9
+
+- Update the vendored Marin App Shell to 1.12.2 and pin `platform.shell: 1.12.2`. Loading messages in the Security, Accessibility, Tech and Updates sections now say "Loading {app name}…". An app's own loading text should use the same wording; the shell exposes `window.MarinAppShell.loadingMessage()` for it.
+
+## 2.0.8
+
+- Update the vendored Marin App Shell to 1.12.1 and pin `platform.shell: 1.12.1`. The shell now builds on Marin UI 1.25.0 and no longer carries its own copy of the banner colors. Nothing looks different.
+
+## 2.0.7
+
+- Update the vendored Marin App Shell to 1.12.0 and pin `platform.shell: 1.12.0`. The MarinOS banner at the top of the page now has the same background and text colors as the footer in light and dark mode, instead of solid black.
+
+## 2.0.6
+
+- Update the vendored Marin App Shell to 1.11.1 and pin `platform.shell: 1.11.1`. The Security and Accessibility sections now link `security.txt` and the WCAG 2.2 standard once each instead of twice.
+
+## 2.0.5
+
+- Update the vendored Marin App Shell to 1.11.0 and pin `platform.shell: 1.11.0`. The shell now builds on Marin UI 1.24.0 and no longer carries its own copies of fixes Marin UI contains. The visible changes are the dark-mode Beta badge, which now uses the lighter blue text Marin UI intended, and the floating Feedback button, which hides while the footer is on screen so it cannot cover footer links.
+
+## 2.0.4
+
+- Update the vendored Marin App Shell to 1.10.1 and pin `platform.shell: 1.10.1`. Form control borders (text and date inputs, selects, checkboxes, radio buttons) now reach 3:1 contrast in light and dark mode.
+
+## 2.0.3
+
+- Allow the shell's Accessibility score and Tech data requests (`marin-os/data/lighthouse.json` and `marin-os/data/tech.json`) in the starter `security.json` and its generated CSP meta tag. Without them, those sections could not load on deployed apps.
+- Update the browser integration test to match Marin App Shell 1.10.0: the Tech footer link, the app title as the only home link, and the Security section's "Built for" text. The test had been failing since the shell moved on.
+- Document that the shell reads score and Tech data from `http://localhost:8935` when served locally, which the app's CSP blocks; the test ignores those messages.
+- Correct the README's description of the header home link.
+
+## 2.0.2
+
+- Update `marin.yml`'s starter `project.status` from `prototype` to `alpha`, matching MarinOS's new app status enum (`alpha`/`beta`/`live`) — see `marin-os`'s `#status` page. `prototype` is no longer a recognized value.
+
+## 2.0.1
+
+- Update the vendored Marin App Shell from 1.0.1 to 1.1.1 and pin `platform.shell: 1.1.1`.
+- Synchronize the shell-managed local font and Lucide icon assets using the App Shell installer while preserving template-owned assets and application scaffolding.
+- Adopt the App Shell 1.1.1 installer behavior that updates an existing `marin.yml` `platform.shell` value as part of the validated, rollback-protected installation.
+- Update starter and developer documentation to reflect the current shell installation and upgrade workflow.
+- Keep the existing Marin App Shell component structure, starter placeholders, CSP/referrer-policy metadata, security tooling, and application-specific CSS/JavaScript unchanged.
+- This is a maintenance update to the template. Existing applications continue to upgrade their pinned Marin App Shell independently.
+
+## 2.0.0
+
+- Replace copied banner, header, navigation, information sections, footer, and Feedback markup with the five Marin App Shell web components. Preserve the `APP_*` starter placeholders and app-owned About/Accessibility content.
+- Vendor the unmodified Marin App Shell 1.0.1 distribution and pin `platform.shell: 1.0.1`. The shell includes the Pico/shared UI baseline and the header identity link to `./`.
+- Remove the legacy `shared/` runtime, standalone Pico stylesheet, `BRAND_VERSION`, and unused starter icon files. Keep existing font assets and security reporting/review metadata unchanged.
+- Load the shell before the app with deferred scripts. Keep `#start` as the default workflow, add a JavaScript-disabled message, and let the shell create standard navigation and status infrastructure.
+- Rewrite starter/developer/agent guidance for component-owned markup and versioned shell upgrades. Add license notices and structural, integrity, and optional browser checks.
+- Emit static CSP and referrer-policy meta tags from `security.json` before resource loading. Add explicit shell feed and data-image allowances, keep script/style/font sources local, and retain the documented header-only gaps.
+- Add an idempotent security-meta emitter, read-only consistency checks, offline regression tests, and browser CSP enforcement probes.
+- This is a breaking starter-layout change, not a required version migration for already deployed apps. Existing apps upgrade their pinned shell independently.
+
+## 1.2.1
+
+- Expand the standard footer into local-app navigation: plain-text app name plus **About**, **Security**, **Accessibility**, and **Updates**, with **MarinOS** on its own line.
+- Keep the informational destinations as hash-routed sections within `index.html`; add the standard `#accessibility` section alongside the existing About, Updates, and Security sections.
+- Keep **About** and **Updates** in the application header navigation and remove the default **Start** header item.
+- Add responsive footer styles in `shared/app-brand.css`.
+
+## 1.2.0
+
+- Add security setup so new apps start compliant with the MarinOS security standard: a starter `security.json` (the `internal` profile, with `APP_OWNER` placeholders), `SECURITY.md`, a generated `.well-known/security.txt`, a `#security` section wired to the shared renderer in `marin-ui` 1.18.0, an About → Security link, and a README "Security" section. Nothing here needs `APP_NAME`-style identity fields — `marin.yml` already owns identity.
+- Add an empty `.nojekyll` file. Apps deployed from a branch (GitHub Pages' default "legacy" build) otherwise skip dot-folders, so `.well-known/security.txt` returned 404. Do not delete it.
+
+## 1.1.0
+
+- Add `marin.yml`, a machine-readable project manifest (owner, status, `marin-ui`/template versions) using the same `APP_NAME`/`APP_DESCRIPTION`/`APP_OWNER`/`APP_REPO` placeholder convention as `index.html` and `README.md`.
+- Add `AGENTS.md`, documenting the template repo itself for anyone or any agent working on the template directly. New apps get their own app-shaped `AGENTS.md` as part of the build workflow, not a copy of this one — see `marin-skills/marin-app-builder/SKILL.md`.
+
+## 1.0.0
+
+- Initial template: starter `index.html` shell, `assets/app.css` and `assets/app.js`, vendored `marin-ui` bundle, `docs/development.md`, PR template.
