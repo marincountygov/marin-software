@@ -79,9 +79,9 @@
         const department = (row.custodian_department || "").trim();
         return `
           <li class="app-card" data-search-item>
-            <h3 class="software-card__name">${escapeHtml(row.system_name || "Unnamed system")}</h3>
-            ${row.system_vendor ? `<p class="software-card__vendor">${escapeHtml(row.system_vendor)}</p>` : ""}
-            ${row.system_purpose ? `<p class="software-card__purpose">${escapeHtml(row.system_purpose)}</p>` : ""}
+            <h3 class="software-card__name mm-card__title">${escapeHtml(row.system_name || "Unnamed system")}</h3>
+            ${row.system_vendor ? `<p class="software-card__vendor mm-card__byline">${escapeHtml(row.system_vendor)}</p>` : ""}
+            ${row.system_purpose ? `<p class="software-card__purpose mm-card__text">${escapeHtml(row.system_purpose)}</p>` : ""}
             <details class="software-card__details">
               <summary>More details</summary>
               ${detailRow("System / product", row.system_product)}
